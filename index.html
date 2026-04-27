@@ -3,192 +3,229 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>QUIZ MASTER CM - Ultra Banger</title>
+    <title>QUIZ MASTER ULTIMATE - By William Aloys</title>
     <link href="https://fonts.googleapis.com/css2?family=Anton&family=Space+Grotesk:wght@400;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg: #000; --text: #fff; --accent: #FFD700; --danger: #CE1126; --success: #007A5E;
+            --bg: #050505; --text: #FFFFFF; --accent: #FFD700;
+            --danger: #FF003C; --success: #00FF41; --card: #0F0F0F;
         }
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body {
             background: var(--bg); color: var(--text);
             font-family: 'Space Grotesk', sans-serif;
-            display: flex; flex-direction: column; min-height: 100vh; padding: 20px;
-        }
-        header { text-align: center; margin-bottom: 30px; }
-        h1 { font-family: 'Anton', sans-serif; font-size: 3.5rem; color: var(--accent); line-height: 1; }
-        
-        .game-container {
-            max-width: 600px; margin: auto; width: 100%;
-            background: #111; border: 4px solid var(--text);
-            border-radius: 20px; padding: 30px;
-            box-shadow: 12px 12px 0px var(--accent);
-            position: relative;
+            min-height: 100vh; display: flex; flex-direction: column;
+            overflow-x: hidden;
         }
 
-        /* --- UI ELEMENTS --- */
-        .stats { display: flex; justify-content: space-between; margin-bottom: 20px; font-weight: bold; font-size: 1.2rem; }
-        .timer-bar { width: 100%; height: 15px; background: #222; border-radius: 10px; margin-bottom: 20px; overflow: hidden; border: 2px solid #444; }
-        #progress { width: 100%; height: 100%; background: var(--accent); transition: width 0.1s linear; }
+        /* --- HEADER BANGER --- */
+        header { text-align: center; padding: 40px 20px; border-bottom: 5px solid var(--text); background: var(--accent); color: #000; }
+        h1 { font-family: 'Anton', sans-serif; font-size: clamp(3rem, 10vw, 5rem); text-transform: uppercase; line-height: 0.8; }
 
-        .question-text { font-size: 1.5rem; font-weight: 700; margin-bottom: 25px; min-height: 80px; }
-        
-        .options-grid { display: grid; grid-template-columns: 1fr; gap: 15px; }
-        .option-btn {
-            background: #222; border: 3px solid var(--text); color: white;
-            padding: 15px; font-family: 'Space Grotesk', sans-serif; font-size: 1.1rem;
-            cursor: pointer; border-radius: 10px; transition: all 0.2s; text-align: left;
-            box-shadow: 4px 4px 0px #444;
+        .main-container { flex: 1; display: flex; align-items: center; justify-content: center; padding: 20px; }
+
+        .game-card {
+            width: 100%; max-width: 800px; background: var(--card);
+            border: 4px solid var(--text); border-radius: 0px; /* Style Brutaliste */
+            padding: 30px; position: relative;
+            box-shadow: 20px 20px 0px var(--accent);
         }
-        .option-btn:hover { transform: translate(-2px, -2px); box-shadow: 6px 6px 0px var(--accent); border-color: var(--accent); }
-        .option-btn:active { transform: translate(2px, 2px); box-shadow: 0px 0px 0px #000; }
+
+        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; }
+        .stat-item { border: 2px solid var(--text); padding: 10px; font-weight: 800; text-transform: uppercase; text-align: center; }
+
+        .timer-track { width: 100%; height: 20px; background: #222; border: 3px solid var(--text); margin-bottom: 30px; position: relative; }
+        #timer-bar { height: 100%; background: var(--danger); width: 100%; transition: width 0.1s linear; }
+
+        .cat-tag { display: inline-block; background: var(--text); color: #000; padding: 5px 15px; font-weight: 900; margin-bottom: 15px; font-size: 0.9rem; }
+
+        .question-text { font-size: clamp(1.4rem, 4vw, 2.2rem); font-weight: 700; line-height: 1.1; margin-bottom: 30px; }
+
+        .options-stack { display: grid; grid-template-columns: 1fr; gap: 15px; }
+        .opt-btn {
+            background: transparent; border: 3px solid var(--text); color: var(--text);
+            padding: 20px; font-family: 'Space Grotesk', sans-serif; font-size: 1.2rem;
+            font-weight: 700; cursor: pointer; text-align: left; transition: 0.1s;
+        }
+        .opt-btn:hover { background: var(--accent); color: #000; transform: translate(-5px, -5px); box-shadow: 5px 5px 0px var(--text); }
 
         /* --- OVERLAYS --- */
-        #overlay {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.9); display: flex; flex-direction: column;
-            align-items: center; justify-content: center; border-radius: 16px;
-            z-index: 10; display: none; text-align: center; padding: 20px;
+        #screen-overlay {
+            position: absolute; inset: -4px; background: var(--bg);
+            z-index: 100; display: none; flex-direction: column;
+            align-items: center; justify-content: center; text-align: center; padding: 40px;
+            border: 4px solid var(--danger);
         }
         .btn-restart { 
-            background: var(--success); color: white; border: none; padding: 15px 30px;
-            font-family: 'Anton', sans-serif; font-size: 1.5rem; cursor: pointer; border-radius: 10px; margin-top: 20px;
+            background: var(--success); color: #000; border: 4px solid #000;
+            padding: 20px 50px; font-family: 'Anton', sans-serif; font-size: 2rem;
+            cursor: pointer; margin-top: 30px; box-shadow: 8px 8px 0px #000;
         }
 
-        footer { text-align: center; margin-top: 40px; font-size: 0.9rem; opacity: 0.7; }
-        .dev-name { color: var(--accent); font-weight: bold; text-transform: uppercase; }
+        footer { background: #000; color: #fff; padding: 30px; text-align: center; border-top: 4px solid var(--text); }
+        .dev-credit { font-family: 'Anton', sans-serif; font-size: 1.5rem; color: var(--accent); }
+
+        /* Animation Error */
+        .shake { animation: shake 0.4s; }
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
     </style>
 </head>
 <body>
 
 <header>
-    <h1>QUIZ MASTER CM</h1>
-    <p>Niveau de difficulté : <span id="difficulty-label" style="color: var(--accent)">NOVICE</span></p>
+    <h1>QUIZ MASTER</h1>
 </header>
 
-<div class="game-container">
-    <div id="overlay">
-        <h2 id="end-title" style="font-family: 'Anton'; font-size: 3rem; color: var(--danger);">GAME OVER</h2>
-        <p id="end-reason">Temps écoulé !</p>
-        <p style="font-size: 1.5rem; margin-top: 10px;">Score final : <span id="final-score" style="color: var(--accent)">0</span></p>
-        <button class="btn-restart" onclick="startGame()">REESSAYER</button>
-    </div>
+<div class="main-container">
+    <div class="game-card" id="game-card">
+        <div id="screen-overlay">
+            <h2 id="res-title" style="font-family: 'Anton'; font-size: 4rem;">MORT !</h2>
+            <p id="res-msg" style="font-size: 1.5rem; margin: 10px 0;">Tu as échoué comme un bleu.</p>
+            <div style="font-size: 3rem; font-weight: 900;" id="final-score">0</div>
+            <button class="btn-restart" onclick="initGame()">RENAÎTRE</button>
+        </div>
 
-    <div class="stats">
-        <span>SCORE: <span id="score" style="color: var(--accent)">0</span></span>
-        <span>TEMPS: <span id="timer-text">15s</span></span>
-    </div>
+        <div class="stats-grid">
+            <div class="stat-item">SCORE: <span id="score" style="color: var(--accent)">0</span></div>
+            <div class="stat-item">TIME: <span id="time-text">15s</span></div>
+        </div>
 
-    <div class="timer-bar">
-        <div id="progress"></div>
-    </div>
+        <div class="timer-track"><div id="timer-bar"></div></div>
 
-    <div id="quiz-box">
-        <div class="question-text" id="q-text">Chargement de la question...</div>
-        <div class="options-grid" id="options">
-            </div>
+        <div id="cat-label" class="cat-tag">CHARGEMENT...</div>
+        <div class="question-text" id="q-text">Préparez-vous...</div>
+
+        <div class="options-stack" id="options"></div>
     </div>
 </div>
 
 <footer>
-    Développé par <span class="dev-name">William / Fouda Enama Marie Fernande</span><br>
-    © Copyright 2026 - École des Postes - All Rights Reserved
+    DÉVELOPPÉ PAR <span class="dev-credit">WILLIAM ALOYS</span><br>
+    <small>© 2026 - ECOLE DES POSTES - TOUS DROITS RÉSERVÉS</small>
 </footer>
 
 <script>
-    // --- MOTEUR DE QUESTIONS (Encyclopédie simulée par niveaux) ---
-    // En production, on pourrait fetcher une API, ici on crée un générateur logique.
-    const questionsPool = [
-        { q: "Quelle est la capitale économique du Cameroun ?", a: ["Douala", "Yaoundé", "Garoua", "Bafoussam"], c: 0, d: 1 },
-        { q: "Quel est l'indicatif téléphonique du Cameroun ?", a: ["+234", "+237", "+221", "+241"], c: 1, d: 1 },
-        { q: "En quelle année le Cameroun a-t-1 obtenu son indépendance ?", a: ["1958", "1960", "1961", "1972"], c: 1, d: 2 },
-        { q: "Quel lion indomptable détient le record de buts en CAN ?", a: ["Roger Milla", "Samuel Eto'o", "Patrick Mboma", "Vincent Aboubakar"], c: 1, d: 2 },
-        { q: "Quel est le plus haut sommet du Cameroun ?", a: ["Mont Mandara", "Mont Cameroun", "Mont Manengouba", "Mont Oku"], c: 1, d: 2 },
-        { q: "Qui a écrit 'Le Vieux Nègre et la Médaille' ?", a: ["Mongo Beti", "Ferdinand Oyono", "Léopold Senghor", "Calixthe Beyala"], c: 1, d: 3 },
-        { q: "Quelle est la langue officielle la plus parlée à l'Est ?", a: ["Français", "Anglais", "Ewondo", "Fufuldé"], c: 0, d: 3 }
+    // --- MÉGA BASE DE DONNÉES ENCYCLOPÉDIQUE ---
+    const database = [
+        { c: "HISTOIRE", q: "Qui était le chef de la résistance camerounaise contre les colons ?", a: ["Um Nyobé", "Ahidjo", "Biya", "Milla"], r: 0 },
+        { c: "SCIENCE", q: "Quelle est la vitesse de la lumière (environ) ?", a: ["300 000 km/s", "150 000 km/s", "1 000 000 km/s", "500 km/h"], r: 0 },
+        { c: "RELIGION", q: "Quel est le premier livre de la Bible ?", a: ["Exode", "Genèse", "Jean", "Psaumes"], r: 1 },
+        { c: "MATHS", q: "Quelle est la valeur approchée de Pi ?", a: ["3.12", "3.16", "3.14", "3.18"], r: 2 },
+        { c: "GEO", q: "Dans quelle ville se trouve le monument de la Réunification ?", a: ["Douala", "Garoua", "Yaoundé", "Bafoussam"], r: 2 },
+        { c: "SOCIÉTÉ", q: "Quelle est la monnaie de l'Afrique de l'Ouest ?", a: ["Euro", "Dollar", "Franc CFA", "Naira"], r: 2 },
+        { c: "SCIENCE", q: "Combien d'éléments compte le tableau périodique ?", a: ["100", "118", "92", "124"], r: 1 },
+        { c: "HISTOIRE", q: "Qui a découvert l'Amérique ?", a: ["Magellan", "Vasco de Gama", "Christophe Colomb", "Marco Polo"], r: 2 },
+        { c: "CULTURE", q: "Quel pays a inventé le Reggae ?", a: ["Nigeria", "USA", "Jamaïque", "Brésil"], r: 2 },
+        { c: "MATHS", q: "Comment appelle-t-on un angle de 90 degrés ?", a: ["Aigu", "Obtus", "Droit", "Plat"], r: 2 },
+        { c: "RELIGION", q: "Quel est le mois de jeûne sacré chez les musulmans ?", a: ["Noël", "Ramadan", "Pâques", "Aïd"], r: 1 },
+        { c: "SPORT", q: "Qui est le meilleur buteur de l'histoire de la sélection du Cameroun ?", a: ["Eto'o", "Milla", "Mboma", "Aboubakar"], r: 0 },
+        { c: "SCIENCE", q: "Quel gaz est nécessaire à la respiration humaine ?", a: ["Azote", "Hélium", "Oxygène", "CO2"], r: 2 },
+        { c: "GÉO", q: "Quel est le plus petit pays du monde ?", a: ["Monaco", "Vatican", "Malte", "Andorre"], r: 1 },
+        { c: "CULTURE", q: "Quelle est la capitale du Japon ?", a: ["Séoul", "Pékin", "Kyoto", "Tokyo"], r: 3 }
+        // Ajoute ici autant de questions que tu veux !
     ];
 
+    let deck = [];
     let score = 0;
-    let currentQuestion = {};
+    let current;
     let timer;
-    let timeLeft = 15;
-    let gameActive = false;
+    let timeRemaining;
 
-    function startGame() {
+    function initGame() {
         score = 0;
-        gameActive = true;
-        document.getElementById('overlay').style.display = 'none';
+        deck = [...database];
+        shuffle(deck);
+        document.getElementById('screen-overlay').style.display = 'none';
         document.getElementById('score').innerText = score;
-        nextQuestion();
+        document.getElementById('game-card').classList.remove('shake');
+        spawnQuestion();
     }
 
-    function nextQuestion() {
-        if(!gameActive) return;
-        
-        // Sélection intelligente par difficulté
-        let diff = score < 5 ? 1 : (score < 12 ? 2 : 3);
-        document.getElementById('difficulty-label').innerText = diff === 1 ? "NOVICE" : (diff === 2 ? "CHAMPION" : "LÉGENDE");
-        
-        const filtered = questionsPool.filter(q => q.d === diff);
-        currentQuestion = filtered[Math.floor(Math.random() * filtered.length)];
-        
-        displayQuestion();
-        startTimer();
+    function shuffle(a) {
+        for (let i = a.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [a[i], a[j]] = [a[j], a[i]];
+        }
     }
 
-    function displayQuestion() {
-        document.getElementById('q-text').innerText = currentQuestion.q;
-        const optionsDiv = document.getElementById('options');
-        optionsDiv.innerHTML = '';
+    function spawnQuestion() {
+        if (deck.length === 0) {
+            victory();
+            return;
+        }
+
+        current = deck.pop(); // Retire la question : ZÉRO RÉPÉTITION
+        document.getElementById('cat-label').innerText = current.c;
+        document.getElementById('q-text').innerText = current.q;
         
-        currentQuestion.a.forEach((opt, index) => {
-            const btn = document.createElement('button');
-            btn.className = 'option-btn';
-            btn.innerText = opt;
-            btn.onclick = () => checkAnswer(index);
-            optionsDiv.appendChild(btn);
+        const container = document.getElementById('options');
+        container.innerHTML = '';
+
+        current.a.forEach((txt, i) => {
+            const b = document.createElement('button');
+            b.className = 'opt-btn';
+            b.innerText = txt;
+            b.onclick = () => verify(i);
+            container.appendChild(b);
         });
+
+        startTimer();
     }
 
     function startTimer() {
         clearInterval(timer);
-        timeLeft = 15;
-        const bar = document.getElementById('progress');
-        const text = document.getElementById('timer-text');
-        
+        timeRemaining = 15;
+        const bar = document.getElementById('timer-bar');
+        const txt = document.getElementById('time-text');
+
         timer = setInterval(() => {
-            timeLeft -= 0.1;
-            const percent = (timeLeft / 15) * 100;
-            bar.style.width = percent + "%";
-            text.innerText = Math.ceil(timeLeft) + "s";
-            
-            if(timeLeft <= 0) {
-                endGame("Temps écoulé !");
+            timeRemaining -= 0.1;
+            bar.style.width = (timeRemaining / 15) * 100 + "%";
+            txt.innerText = Math.ceil(timeRemaining) + "s";
+
+            if (timeRemaining <= 0) {
+                gameOver("TEMPS ÉCOULÉ !");
             }
         }, 100);
     }
 
-    function checkAnswer(idx) {
-        if(idx === currentQuestion.c) {
+    function verify(idx) {
+        if (idx === current.r) {
             score++;
             document.getElementById('score').innerText = score;
-            nextQuestion();
+            spawnQuestion();
         } else {
-            endGame("Mauvaise réponse !");
+            gameOver("MAUVAISE RÉPONSE !");
         }
     }
 
-    function endGame(reason) {
-        gameActive = false;
+    function gameOver(reason) {
         clearInterval(timer);
-        document.getElementById('overlay').style.display = 'flex';
-        document.getElementById('end-reason').innerText = reason;
-        document.getElementById('final-score').innerText = score;
-        document.getElementById('end-title').innerText = "GAME OVER";
+        const card = document.getElementById('game-card');
+        card.classList.add('shake');
+        
+        setTimeout(() => {
+            document.getElementById('screen-overlay').style.display = 'flex';
+            document.getElementById('res-title').innerText = "GAME OVER";
+            document.getElementById('res-msg').innerText = reason;
+            document.getElementById('final-score').innerText = score;
+        }, 400);
     }
 
-    // Lancement au chargement
-    window.onload = startGame;
+    function victory() {
+        clearInterval(timer);
+        document.getElementById('screen-overlay').style.display = 'flex';
+        document.getElementById('res-title').innerText = "LÉGENDE !";
+        document.getElementById('res-msg').innerText = "Tu as fini toute l'encyclopédie.";
+        document.getElementById('final-score').innerText = score;
+        document.getElementById('res-title').style.color = "var(--success)";
+    }
+
+    window.onload = initGame;
 </script>
 
 </body>
