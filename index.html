@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Budget Réel CM - Banger Edition</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Anton&family=Space+Grotesk:wght@400;700&display=swap" rel="stylesheet">
+
+    <style>
+        /* --- RESET & VARIABLES --- */
+        :root {
+            --bg-color: #000000;
+            --text-color: #FFFFFF;
+            --accent-color: #FFD700; /* OR */
+            --success-color: #007A5E; /* VERT */
+            --danger-color: #CE1126; /* ROUGE */
+            --card-bg: #111111;
+            --border-width: 3px;
+            --font-heading: 'Anton', sans-serif;
+            --font-body: 'Space Grotesk', sans-serif;
+        }
+
+        * {
+            box-sizing: border-width;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: var(--font-body);
+            overflow-x: hidden;
+            padding: 20px;
+        }
+
+        /* --- TYPOGRAPHIE --- */
+        h1, h2, h3 {
+            font-family: var(--font-heading);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        h1 {
+            font-size: 4rem;
+            line-height: 0.9;
+            color: var(--accent-color);
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.8;
+            margin-bottom: 40px;
+        }
+
+        /* --- LAYOUT --- */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* --- SIMULATOR CARD --- */
+        .simulator-card {
+            background-color: var(--card-bg);
+            border: var(--border-width) solid var(--text-color);
+            border-radius: 30px;
+            padding: 40px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            box-shadow: 10px 10px 0px var(--accent-color);
+        }
+
+        @media (max-width: 768px) {
+            .simulator-card { grid-template-columns: 1fr; }
+            h1 { font-size: 2.5rem; }
+        }
+
+        /* --- INPUTS FRAMEWORK --- */
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        label {
+            display: block;
+            font-weight: 700;
+            font-size: 1.1rem;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+        }
+
+        select, input[type="range"] {
+            width: 100%;
+            background: #222;
+            border: 2px solid #444;
+            color: white;
+            padding: 15px;
+            font-family: var(--font-body);
+            font-size: 1rem;
+            border-radius: 10px;
+            appearance: none;
+        }
+
+        select:focus {
+            border-color: var(--accent-color);
+            outline: none;
+        }
+
+        /* Custom Range Slider */
+        input[type="range"] {
+            -webkit-appearance: none;
+            background: transparent;
+            border: none;
+            padding: 0;
+        }
+
+        input[type="range"]::-webkit-slider-runnable-track {
+            width: 100%;
+            height: 15px;
+            background: #222;
+            border-radius: 10px;
+            border: 2px solid #444;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            height: 30px;
+            width: 30px;
+            border-radius: 50%;
+            background: var(--accent-color);
+            margin-top: -10px;
+            cursor: pointer;
+            border: 3px solid #000;
+        }
+
+        .range-values {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.9rem;
+            margin-top: 5px;
+            color: #aaa;
+        }
+
+        /* --- RESULTS ZONE --- */
+        .results-zone {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            border-left: 2px solid #333;
+            padding-left: 40px;
+        }
+
+        @media (max-width: 768px) {
+            .results-zone { border-left: none; padding-left: 0; padding-top: 40px; border-top: 2px solid #333;}
+        }
+
+        .total-label {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #aaa;
+        }
+
+        .total-amount {
+            font-family: var(--font-heading);
+            font-size: 6rem;
+            line-height: 1;
+            color: var(--text-color);
+            margin-bottom: 20px;
+            transition: color 0.3s ease;
+        }
+
+        .fcfa {
+            font-size: 2rem;
+            color: var(--accent-color);
+        }
+
+        .status-message {
+            background-color: #222;
+            border: 2px solid #444;
+            padding: 20px;
+            border-radius: 15px;
+            font-size: 1.1rem;
+            line-height: 1.6;
+        }
+
+        .highlight {
+            color: var(--accent-color);
+            font-weight: bold;
+        }
+
+        /* --- BUTTON BANGER --- */
+        .btn-calc {
+            background-color: var(--success-color);
+            color: white;
+            border: var(--border-width) solid #000;
+            font-family: var(--font-heading);
+            font-size: 1.5rem;
+            padding: 15px 30px;
+            text-transform: uppercase;
+            cursor: pointer;
+            border-radius: 10px;
+            transition: all 0.1s ease;
+            box-shadow: 5px 5px 0px #000;
+            margin-top: 20px;
+            width: 100%;
+        }
+
+        .btn-calc:hover {
+            transform: translate(-2px, -2px);
+            box-shadow: 7px 7px 0px #000;
+        }
+
+        .btn-calc:active {
+            transform: translate(3px, 3px);
+            box-shadow: 2px 2px 0px #000;
+        }
+
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1>LA VRAIE VIE CM</h1>
+        <p class="subtitle">Arrête de rêver sur Insta. Calcule la réalité du Mboa.</p>
+    </header>
+
+    <main>
+        <div class="simulator-card">
+            
+            <div class="form-section">
+                <h2 style="color: white; margin-bottom: 20px; font-size: 2rem;">VIVRE SEUL À YAOUNDÉ</h2>
+                
+                <div class="form-group">
+                    <label>Quartier (Style de vie)</label>
+                    <select id="quartier">
+                        <option value="populaire">Populaire (Nkolbisson, Chapelle Ngoa-Ekele)</option>
+                        <option value="moyen" selected>Moyen (Biyem-Assi, Mendong, Essos)</option>
+                        <option value="chic">Haut Standing (Bastos, Golf, Santa Barbara)</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Type de logement</label>
+                    <select id="logement">
+                        <option value="chambre">Chambre Moderne (Douche interne)</option>
+                        <option value="studio" selected>Studio Moderne (Salon + Chambre)</option>
+                        <option value="appartement">Appartement (Salon + 2 Chambres)</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Alimentation (Niveau de Ndjoka)</label>
+                    <input type="range" id="bouffe" min="1" max="3" step="1" value="2">
+                    <div class="range-values">
+                        <span>Survie (Pain/Sardine)</span>
+                        <span>Normal (Marché/Cuisine)</span>
+                        <span>Restaurant/FastFood</span>
+                    </div>
+                </div>
+
+                <button class="btn-calc" onclick="calculerBudget()">Lancer le Calcul</button>
+            </div>
+
+            <div class="results-zone">
+                <div>
+                    <div class="total-label">Budget Mensuel Estimé</div>
+                    <div class="total-amount" id="totalDisplay">0<span class="fcfa"> FCFA</span></div>
+                </div>
+                
+                <div class="status-message" id="statusMessage">
+                    Remplis le formulaire et clique sur le gros bouton vert pour voir si tu peux tchop Yaoundé.
+                </div>
+            </div>
+
+        </div>
+    </main>
+</div>
+
+<script>
+    // --- DONNÉES DE BASE (VALEURS MOYENNES RÉELLES 2026) ---
+    const data = {
+        loyer: {
+            populaire: { chambre: 25000, studio: 45000, appartement: 75000 },
+            moyen: { chambre: 45000, studio: 85000, appartement: 130000 },
+            chic: { chambre: 100000, studio: 200000, appartement: 350000 }
+        },
+         chargesFixes: 15000, // Eau + Elec de base pour une personne
+        transport: 30000,    // Taxi ramassage quotidien
+        bouffe: {
+            "1": 35000, // Survie
+            "2": 65000, // Normal
+            "3": 120000 // Ndjoka
+        }
+    };
+
+    function calculerBudget() {
+        // 1. Récupération des inputs
+        const quartier = document.getElementById('quartier').value;
+        const logement = document.getElementById('logement').value;
+        const bouffeLevel = document.getElementById('bouffe').value;
+
+        // 2. Logique de calcul
+        const coutLoyer = data.loyer[quartier][logement];
+        const coutBouffe = data.bouffe[bouffeLevel];
+        
+        // Charges adaptées au standing
+        let multiplier = 1;
+        if(quartier === 'chic') multiplier = 2.5; // Clim, plus d'appareils
+        if(logement === 'appartement') multiplier += 0.5;
+        const coutCharges = data.chargesFixes * multiplier;
+
+        const total = coutLoyer + coutBouffe + coutCharges + data.transport;
+
+        // 3. Mise à jour de l'UI (Animation de compteur)
+        animateValue("totalDisplay", 0, total, 1000);
+        
+        updateStatusMessage(total, quartier);
+    }
+
+    // Animation de compteur stylée
+    function animateValue(id, start, end, duration) {
+        if (start === end) return;
+        const obj = document.getElementById(id);
+        const range = end - start;
+        let current = start;
+        const increment = end > start ? Math.ceil(range / (duration / 10)) : -1;
+        const timer = setInterval(() => {
+            current += increment;
+            if ((increment > 0 && current >= end) || (increment < 0 && current <= end)) {
+                obj.innerHTML = end.toLocaleString('fr-FR') + '<span class="fcfa"> FCFA</span>';
+                clearInterval(timer);
+            } else {
+                obj.innerHTML = current.toLocaleString('fr-FR') + '<span class="fcfa"> FCFA</span>';
+            }
+        }, 10);
+    }
+
+    function updateStatusMessage(total, quartier) {
+        const msgBlock = document.getElementById('statusMessage');
+        const totalDisplay = document.getElementById('totalDisplay');
+        let message = "";
+        let color = "var(--text-color)";
+
+        const salaireMoyen = 150000; // Estimation salaire classe moyenne junior
+
+        if (total < 100000) {
+            message = "⚠️ <span class='highlight'>Mode Survie Activé.</span> Tu vas tchop le tapioca fort. Oublie les sorties à Bastos.";
+            color = var(--danger-color);
+        } else if (total <= 200000) {
+            message = "✅ <span class='highlight'>C'est jouable.</span> C'est le budget standard pour un jeune travailleur à Yaoundé. Tu es dans la moyenne.";
+            color = "var(--text-color)";
+        } else if (total <= 400000) {
+            message = "😎 <span class='highlight'>Tu commences à être bien.</span> Logement décent, bonne nourriture. Tu peux même inviter les gens chez toi.";
+            color = var(--accent-color);
+        } else {
+            message = "🦁 <span class='highlight'>Grand Mopao !</span> Là tu vis la vie de château. Bastos t'appartient.";
+            color = var(--success-color);
+        }
+
+        msgBlock.innerHTML = message;
+        totalDisplay.style.color = color;
+    }
+
+    // Initialisation
+    calculerBudget();
+
+</script>
+
+</body>
+</html>
