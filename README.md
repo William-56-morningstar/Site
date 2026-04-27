@@ -1,21 +1,30 @@
-# 🏆 QUIZ MASTER CM - Ultra Edition
+# ⚡ QUIZ MASTER ULTIMATE
+### *By William Aloys*
 
-![Year](https://img.shields.io/badge/Year-2026-FFD700?style=for-the-badge)
-![Dev](https://img.shields.io/badge/Dev-William_Fouda-007A5E?style=for-the-badge)
+"Le savoir est une arme, charge ton chargeur." 🇨🇲
 
-Une application de quiz dynamique conçue pour tester la culture générale et les réflexes. Développée dans le cadre des projets de l'**École des Postes**.
+---
 
-## 🔥 Fonctionnalités Banger
-- **Difficulté Adaptive** : Le jeu analyse ton score et durcit les questions automatiquement.
-- **Moteur de Temps Réel** : 15 secondes pour répondre. Pas de place pour la triche.
-- **Sanction Immédiate** : Une erreur et ton score retombe à **0**. Seuls les vrais survivent.
-- **Design High-Contrast** : Optimisé pour une lisibilité maximale sur smartphone.
+## 🧊 C'est quoi le projet ?
+T'as déjà voulu tester ton cerveau mais tous les jeux sont soit trop nuls, soit trop répétitifs ? **Quiz Master Ultimate** débarque. C'est du Brutalisme pur, du code solide et une encyclopédie qui ne te lâche pas.
 
-## 🛠️ Installation Rapide
-1. Clonez ce repo.
-2. Ouvrez `index.html` dans n'importe quel navigateur.
-3. Soyez prêt à chauffer votre cerveau.
+Pas de pub, pas de fioritures. Juste toi, 15 secondes, et des questions qui piquent.
 
-## 📜 Copyright
-© 2026 - **William / Fouda Enama Marie Fernande**. 
-Tous droits réservés. École des Postes, Cameroun.
+## 🔥 Pourquoi c'est un Banger ?
+- **Zéro Doublon** : Grâce au système de "Deck", une question répondue disparaît. Tu ne verras jamais deux fois la même chose dans une partie.
+- **Design Agressif** : Inspiré du *Neo-Brutalism*. Des couleurs qui frappent, des polices massives. 
+- **Chute Libre** : Tu rates ? Ton score retourne à la poussière. Ici, on ne récompense que l'excellence.
+- **Encyclopédique** : Science, Géo, Religion, Histoire du Mboa... tout y est.
+
+## 🛠️ Stack Technique
+- **Logic** : JavaScript ES6 (Engine anti-doublon optimisé).
+- **Style** : CSS3 Brutalist (CSS Variables & Flexbox).
+- **Vibe** : William Aloys Energy.
+
+## 🚀 Installation (En 2-2)
+1. Télécharge `index.html`.
+2. Lance-le dans ton navigateur.
+3. Partage le lien GitHub Pages à tes potes pour les humilier sur leur score.
+
+---
+**Développé en chef par William Aloys** *École des Postes - 2026* *Copyright : Ne vole pas le flow, inspire-toi seulement.*
