@@ -3,372 +3,192 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Budget Réel CM - Banger Edition</title>
-    
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <title>QUIZ MASTER CM - Ultra Banger</title>
     <link href="https://fonts.googleapis.com/css2?family=Anton&family=Space+Grotesk:wght@400;700&display=swap" rel="stylesheet">
-
     <style>
-        /* --- RESET & VARIABLES --- */
         :root {
-            --bg-color: #000000;
-            --text-color: #FFFFFF;
-            --accent-color: #FFD700; /* OR */
-            --success-color: #007A5E; /* VERT */
-            --danger-color: #CE1126; /* ROUGE */
-            --card-bg: #111111;
-            --border-width: 3px;
-            --font-heading: 'Anton', sans-serif;
-            --font-body: 'Space Grotesk', sans-serif;
+            --bg: #000; --text: #fff; --accent: #FFD700; --danger: #CE1126; --success: #007A5E;
         }
-
-        * {
-            box-sizing: border-width;
-            margin: 0;
-            padding: 0;
-        }
-
+        * { box-sizing: border-box; margin: 0; padding: 0; }
         body {
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            font-family: var(--font-body);
-            overflow-x: hidden;
-            padding: 20px;
+            background: var(--bg); color: var(--text);
+            font-family: 'Space Grotesk', sans-serif;
+            display: flex; flex-direction: column; min-height: 100vh; padding: 20px;
+        }
+        header { text-align: center; margin-bottom: 30px; }
+        h1 { font-family: 'Anton', sans-serif; font-size: 3.5rem; color: var(--accent); line-height: 1; }
+        
+        .game-container {
+            max-width: 600px; margin: auto; width: 100%;
+            background: #111; border: 4px solid var(--text);
+            border-radius: 20px; padding: 30px;
+            box-shadow: 12px 12px 0px var(--accent);
+            position: relative;
         }
 
-        /* --- TYPOGRAPHIE --- */
-        h1, h2, h3 {
-            font-family: var(--font-heading);
-            text-transform: uppercase;
-            letter-spacing: 1px;
+        /* --- UI ELEMENTS --- */
+        .stats { display: flex; justify-content: space-between; margin-bottom: 20px; font-weight: bold; font-size: 1.2rem; }
+        .timer-bar { width: 100%; height: 15px; background: #222; border-radius: 10px; margin-bottom: 20px; overflow: hidden; border: 2px solid #444; }
+        #progress { width: 100%; height: 100%; background: var(--accent); transition: width 0.1s linear; }
+
+        .question-text { font-size: 1.5rem; font-weight: 700; margin-bottom: 25px; min-height: 80px; }
+        
+        .options-grid { display: grid; grid-template-columns: 1fr; gap: 15px; }
+        .option-btn {
+            background: #222; border: 3px solid var(--text); color: white;
+            padding: 15px; font-family: 'Space Grotesk', sans-serif; font-size: 1.1rem;
+            cursor: pointer; border-radius: 10px; transition: all 0.2s; text-align: left;
+            box-shadow: 4px 4px 0px #444;
+        }
+        .option-btn:hover { transform: translate(-2px, -2px); box-shadow: 6px 6px 0px var(--accent); border-color: var(--accent); }
+        .option-btn:active { transform: translate(2px, 2px); box-shadow: 0px 0px 0px #000; }
+
+        /* --- OVERLAYS --- */
+        #overlay {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.9); display: flex; flex-direction: column;
+            align-items: center; justify-content: center; border-radius: 16px;
+            z-index: 10; display: none; text-align: center; padding: 20px;
+        }
+        .btn-restart { 
+            background: var(--success); color: white; border: none; padding: 15px 30px;
+            font-family: 'Anton', sans-serif; font-size: 1.5rem; cursor: pointer; border-radius: 10px; margin-top: 20px;
         }
 
-        h1 {
-            font-size: 4rem;
-            line-height: 0.9;
-            color: var(--accent-color);
-            margin-bottom: 10px;
-        }
-
-        .subtitle {
-            font-size: 1.2rem;
-            opacity: 0.8;
-            margin-bottom: 40px;
-        }
-
-        /* --- LAYOUT --- */
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        /* --- SIMULATOR CARD --- */
-        .simulator-card {
-            background-color: var(--card-bg);
-            border: var(--border-width) solid var(--text-color);
-            border-radius: 30px;
-            padding: 40px;
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 40px;
-            box-shadow: 10px 10px 0px var(--accent-color);
-        }
-
-        @media (max-width: 768px) {
-            .simulator-card { grid-template-columns: 1fr; }
-            h1 { font-size: 2.5rem; }
-        }
-
-        /* --- INPUTS FRAMEWORK --- */
-        .form-group {
-            margin-bottom: 25px;
-        }
-
-        label {
-            display: block;
-            font-weight: 700;
-            font-size: 1.1rem;
-            margin-bottom: 10px;
-            text-transform: uppercase;
-        }
-
-        select, input[type="range"] {
-            width: 100%;
-            background: #222;
-            border: 2px solid #444;
-            color: white;
-            padding: 15px;
-            font-family: var(--font-body);
-            font-size: 1rem;
-            border-radius: 10px;
-            appearance: none;
-        }
-
-        select:focus {
-            border-color: var(--accent-color);
-            outline: none;
-        }
-
-        /* Custom Range Slider */
-        input[type="range"] {
-            -webkit-appearance: none;
-            background: transparent;
-            border: none;
-            padding: 0;
-        }
-
-        input[type="range"]::-webkit-slider-runnable-track {
-            width: 100%;
-            height: 15px;
-            background: #222;
-            border-radius: 10px;
-            border: 2px solid #444;
-        }
-
-        input[type="range"]::-webkit-slider-thumb {
-            -webkit-appearance: none;
-            height: 30px;
-            width: 30px;
-            border-radius: 50%;
-            background: var(--accent-color);
-            margin-top: -10px;
-            cursor: pointer;
-            border: 3px solid #000;
-        }
-
-        .range-values {
-            display: flex;
-            justify-content: space-between;
-            font-size: 0.9rem;
-            margin-top: 5px;
-            color: #aaa;
-        }
-
-        /* --- RESULTS ZONE --- */
-        .results-zone {
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            border-left: 2px solid #333;
-            padding-left: 40px;
-        }
-
-        @media (max-width: 768px) {
-            .results-zone { border-left: none; padding-left: 0; padding-top: 40px; border-top: 2px solid #333;}
-        }
-
-        .total-label {
-            font-size: 1.5rem;
-            font-weight: bold;
-            color: #aaa;
-        }
-
-        .total-amount {
-            font-family: var(--font-heading);
-            font-size: 6rem;
-            line-height: 1;
-            color: var(--text-color);
-            margin-bottom: 20px;
-            transition: color 0.3s ease;
-        }
-
-        .fcfa {
-            font-size: 2rem;
-            color: var(--accent-color);
-        }
-
-        .status-message {
-            background-color: #222;
-            border: 2px solid #444;
-            padding: 20px;
-            border-radius: 15px;
-            font-size: 1.1rem;
-            line-height: 1.6;
-        }
-
-        .highlight {
-            color: var(--accent-color);
-            font-weight: bold;
-        }
-
-        /* --- BUTTON BANGER --- */
-        .btn-calc {
-            background-color: var(--success-color);
-            color: white;
-            border: var(--border-width) solid #000;
-            font-family: var(--font-heading);
-            font-size: 1.5rem;
-            padding: 15px 30px;
-            text-transform: uppercase;
-            cursor: pointer;
-            border-radius: 10px;
-            transition: all 0.1s ease;
-            box-shadow: 5px 5px 0px #000;
-            margin-top: 20px;
-            width: 100%;
-        }
-
-        .btn-calc:hover {
-            transform: translate(-2px, -2px);
-            box-shadow: 7px 7px 0px #000;
-        }
-
-        .btn-calc:active {
-            transform: translate(3px, 3px);
-            box-shadow: 2px 2px 0px #000;
-        }
-
+        footer { text-align: center; margin-top: 40px; font-size: 0.9rem; opacity: 0.7; }
+        .dev-name { color: var(--accent); font-weight: bold; text-transform: uppercase; }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <header>
-        <h1>LA VRAIE VIE CM</h1>
-        <p class="subtitle">Arrête de rêver sur Insta. Calcule la réalité du Mboa.</p>
-    </header>
+<header>
+    <h1>QUIZ MASTER CM</h1>
+    <p>Niveau de difficulté : <span id="difficulty-label" style="color: var(--accent)">NOVICE</span></p>
+</header>
 
-    <main>
-        <div class="simulator-card">
-            
-            <div class="form-section">
-                <h2 style="color: white; margin-bottom: 20px; font-size: 2rem;">VIVRE SEUL À YAOUNDÉ</h2>
-                
-                <div class="form-group">
-                    <label>Quartier (Style de vie)</label>
-                    <select id="quartier">
-                        <option value="populaire">Populaire (Nkolbisson, Chapelle Ngoa-Ekele)</option>
-                        <option value="moyen" selected>Moyen (Biyem-Assi, Mendong, Essos)</option>
-                        <option value="chic">Haut Standing (Bastos, Golf, Santa Barbara)</option>
-                    </select>
-                </div>
+<div class="game-container">
+    <div id="overlay">
+        <h2 id="end-title" style="font-family: 'Anton'; font-size: 3rem; color: var(--danger);">GAME OVER</h2>
+        <p id="end-reason">Temps écoulé !</p>
+        <p style="font-size: 1.5rem; margin-top: 10px;">Score final : <span id="final-score" style="color: var(--accent)">0</span></p>
+        <button class="btn-restart" onclick="startGame()">REESSAYER</button>
+    </div>
 
-                <div class="form-group">
-                    <label>Type de logement</label>
-                    <select id="logement">
-                        <option value="chambre">Chambre Moderne (Douche interne)</option>
-                        <option value="studio" selected>Studio Moderne (Salon + Chambre)</option>
-                        <option value="appartement">Appartement (Salon + 2 Chambres)</option>
-                    </select>
-                </div>
+    <div class="stats">
+        <span>SCORE: <span id="score" style="color: var(--accent)">0</span></span>
+        <span>TEMPS: <span id="timer-text">15s</span></span>
+    </div>
 
-                <div class="form-group">
-                    <label>Alimentation (Niveau de Ndjoka)</label>
-                    <input type="range" id="bouffe" min="1" max="3" step="1" value="2">
-                    <div class="range-values">
-                        <span>Survie (Pain/Sardine)</span>
-                        <span>Normal (Marché/Cuisine)</span>
-                        <span>Restaurant/FastFood</span>
-                    </div>
-                </div>
+    <div class="timer-bar">
+        <div id="progress"></div>
+    </div>
 
-                <button class="btn-calc" onclick="calculerBudget()">Lancer le Calcul</button>
+    <div id="quiz-box">
+        <div class="question-text" id="q-text">Chargement de la question...</div>
+        <div class="options-grid" id="options">
             </div>
-
-            <div class="results-zone">
-                <div>
-                    <div class="total-label">Budget Mensuel Estimé</div>
-                    <div class="total-amount" id="totalDisplay">0<span class="fcfa"> FCFA</span></div>
-                </div>
-                
-                <div class="status-message" id="statusMessage">
-                    Remplis le formulaire et clique sur le gros bouton vert pour voir si tu peux tchop Yaoundé.
-                </div>
-            </div>
-
-        </div>
-    </main>
+    </div>
 </div>
 
+<footer>
+    Développé par <span class="dev-name">William / Fouda Enama Marie Fernande</span><br>
+    © Copyright 2026 - École des Postes - All Rights Reserved
+</footer>
+
 <script>
-    // --- DONNÉES DE BASE (VALEURS MOYENNES RÉELLES 2026) ---
-    const data = {
-        loyer: {
-            populaire: { chambre: 25000, studio: 45000, appartement: 75000 },
-            moyen: { chambre: 45000, studio: 85000, appartement: 130000 },
-            chic: { chambre: 100000, studio: 200000, appartement: 350000 }
-        },
-         chargesFixes: 15000, // Eau + Elec de base pour une personne
-        transport: 30000,    // Taxi ramassage quotidien
-        bouffe: {
-            "1": 35000, // Survie
-            "2": 65000, // Normal
-            "3": 120000 // Ndjoka
-        }
-    };
+    // --- MOTEUR DE QUESTIONS (Encyclopédie simulée par niveaux) ---
+    // En production, on pourrait fetcher une API, ici on crée un générateur logique.
+    const questionsPool = [
+        { q: "Quelle est la capitale économique du Cameroun ?", a: ["Douala", "Yaoundé", "Garoua", "Bafoussam"], c: 0, d: 1 },
+        { q: "Quel est l'indicatif téléphonique du Cameroun ?", a: ["+234", "+237", "+221", "+241"], c: 1, d: 1 },
+        { q: "En quelle année le Cameroun a-t-1 obtenu son indépendance ?", a: ["1958", "1960", "1961", "1972"], c: 1, d: 2 },
+        { q: "Quel lion indomptable détient le record de buts en CAN ?", a: ["Roger Milla", "Samuel Eto'o", "Patrick Mboma", "Vincent Aboubakar"], c: 1, d: 2 },
+        { q: "Quel est le plus haut sommet du Cameroun ?", a: ["Mont Mandara", "Mont Cameroun", "Mont Manengouba", "Mont Oku"], c: 1, d: 2 },
+        { q: "Qui a écrit 'Le Vieux Nègre et la Médaille' ?", a: ["Mongo Beti", "Ferdinand Oyono", "Léopold Senghor", "Calixthe Beyala"], c: 1, d: 3 },
+        { q: "Quelle est la langue officielle la plus parlée à l'Est ?", a: ["Français", "Anglais", "Ewondo", "Fufuldé"], c: 0, d: 3 }
+    ];
 
-    function calculerBudget() {
-        // 1. Récupération des inputs
-        const quartier = document.getElementById('quartier').value;
-        const logement = document.getElementById('logement').value;
-        const bouffeLevel = document.getElementById('bouffe').value;
+    let score = 0;
+    let currentQuestion = {};
+    let timer;
+    let timeLeft = 15;
+    let gameActive = false;
 
-        // 2. Logique de calcul
-        const coutLoyer = data.loyer[quartier][logement];
-        const coutBouffe = data.bouffe[bouffeLevel];
-        
-        // Charges adaptées au standing
-        let multiplier = 1;
-        if(quartier === 'chic') multiplier = 2.5; // Clim, plus d'appareils
-        if(logement === 'appartement') multiplier += 0.5;
-        const coutCharges = data.chargesFixes * multiplier;
-
-        const total = coutLoyer + coutBouffe + coutCharges + data.transport;
-
-        // 3. Mise à jour de l'UI (Animation de compteur)
-        animateValue("totalDisplay", 0, total, 1000);
-        
-        updateStatusMessage(total, quartier);
+    function startGame() {
+        score = 0;
+        gameActive = true;
+        document.getElementById('overlay').style.display = 'none';
+        document.getElementById('score').innerText = score;
+        nextQuestion();
     }
 
-    // Animation de compteur stylée
-    function animateValue(id, start, end, duration) {
-        if (start === end) return;
-        const obj = document.getElementById(id);
-        const range = end - start;
-        let current = start;
-        const increment = end > start ? Math.ceil(range / (duration / 10)) : -1;
-        const timer = setInterval(() => {
-            current += increment;
-            if ((increment > 0 && current >= end) || (increment < 0 && current <= end)) {
-                obj.innerHTML = end.toLocaleString('fr-FR') + '<span class="fcfa"> FCFA</span>';
-                clearInterval(timer);
-            } else {
-                obj.innerHTML = current.toLocaleString('fr-FR') + '<span class="fcfa"> FCFA</span>';
+    function nextQuestion() {
+        if(!gameActive) return;
+        
+        // Sélection intelligente par difficulté
+        let diff = score < 5 ? 1 : (score < 12 ? 2 : 3);
+        document.getElementById('difficulty-label').innerText = diff === 1 ? "NOVICE" : (diff === 2 ? "CHAMPION" : "LÉGENDE");
+        
+        const filtered = questionsPool.filter(q => q.d === diff);
+        currentQuestion = filtered[Math.floor(Math.random() * filtered.length)];
+        
+        displayQuestion();
+        startTimer();
+    }
+
+    function displayQuestion() {
+        document.getElementById('q-text').innerText = currentQuestion.q;
+        const optionsDiv = document.getElementById('options');
+        optionsDiv.innerHTML = '';
+        
+        currentQuestion.a.forEach((opt, index) => {
+            const btn = document.createElement('button');
+            btn.className = 'option-btn';
+            btn.innerText = opt;
+            btn.onclick = () => checkAnswer(index);
+            optionsDiv.appendChild(btn);
+        });
+    }
+
+    function startTimer() {
+        clearInterval(timer);
+        timeLeft = 15;
+        const bar = document.getElementById('progress');
+        const text = document.getElementById('timer-text');
+        
+        timer = setInterval(() => {
+            timeLeft -= 0.1;
+            const percent = (timeLeft / 15) * 100;
+            bar.style.width = percent + "%";
+            text.innerText = Math.ceil(timeLeft) + "s";
+            
+            if(timeLeft <= 0) {
+                endGame("Temps écoulé !");
             }
-        }, 10);
+        }, 100);
     }
 
-    function updateStatusMessage(total, quartier) {
-        const msgBlock = document.getElementById('statusMessage');
-        const totalDisplay = document.getElementById('totalDisplay');
-        let message = "";
-        let color = "var(--text-color)";
-
-        const salaireMoyen = 150000; // Estimation salaire classe moyenne junior
-
-        if (total < 100000) {
-            message = "⚠️ <span class='highlight'>Mode Survie Activé.</span> Tu vas tchop le tapioca fort. Oublie les sorties à Bastos.";
-            color = var(--danger-color);
-        } else if (total <= 200000) {
-            message = "✅ <span class='highlight'>C'est jouable.</span> C'est le budget standard pour un jeune travailleur à Yaoundé. Tu es dans la moyenne.";
-            color = "var(--text-color)";
-        } else if (total <= 400000) {
-            message = "😎 <span class='highlight'>Tu commences à être bien.</span> Logement décent, bonne nourriture. Tu peux même inviter les gens chez toi.";
-            color = var(--accent-color);
+    function checkAnswer(idx) {
+        if(idx === currentQuestion.c) {
+            score++;
+            document.getElementById('score').innerText = score;
+            nextQuestion();
         } else {
-            message = "🦁 <span class='highlight'>Grand Mopao !</span> Là tu vis la vie de château. Bastos t'appartient.";
-            color = var(--success-color);
+            endGame("Mauvaise réponse !");
         }
-
-        msgBlock.innerHTML = message;
-        totalDisplay.style.color = color;
     }
 
-    // Initialisation
-    calculerBudget();
+    function endGame(reason) {
+        gameActive = false;
+        clearInterval(timer);
+        document.getElementById('overlay').style.display = 'flex';
+        document.getElementById('end-reason').innerText = reason;
+        document.getElementById('final-score').innerText = score;
+        document.getElementById('end-title').innerText = "GAME OVER";
+    }
 
+    // Lancement au chargement
+    window.onload = startGame;
 </script>
 
 </body>
